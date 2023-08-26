@@ -1,0 +1,16 @@
+{
+  "unpublishedCollection": {
+    "name": "utils",
+    "pageId": "User Managment",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "actions": [],
+    "archivedActions": [],
+    "body": "export default {\n\tsignOut: async () => {\n\t\tclearStore('token', null).then(() => navigateTo('Login'));\n\t},\n\n\tuserToken: async () => {\n\t\tconst token = appsmith.store.token;\n\t\treturn jsonwebtoken.decode(token, 'secret');\n\t},\n\n\tgetAllUsers: async () => {\n\t\tconst users = await getUsers.run();\n\n\t\treturn users.map(u => {\n\t\t\treturn   {\n\t\t\t\tFirstName: u.first_name,\n\t\t\t\tLastName:u.last_name,\n\t\t\t\tAccountType: u.role,\n\t\t\t\tEmail: u.email,\n\t\t\t\tDateAdded: u.created,\n\t\t\t\tLastActive: u.last_login,\n\t\t\t\tId: u.id,\n\t\t\t}\n\t\t})\n\t},\n\n\tgenerateHash: async (password) => {\n\t\treturn dcodeIO.bcrypt.hashSync(password, 10);\n\t},\n\t\n\tnewUser: async () => {\n\t\tconst passwordHash = await this.generateHash(inp_password.text);\n\t\t\n\t\tawait createUser.run({\n\t\t\tpasswordHash,\n\t\t});\n\t\t\n\t\tawait this.getAllUsers();\n\t\t\n\t\tcloseModal('mdl_addUser');\n\t\t\n\t\tshowAlert('User Created!', 'success');\n\t},\n\t\n\teditUser: async () => {\n\t\tawait updateUser.run();\n\t\t\n\t\tawait this.getAllUsers();\n\t\t\n\t\tcloseModal('mdl_editUser');\n\t\t\n\t\tshowAlert('User Updated!', 'success');\n\t},\n\t\n\tremoveUser: async () => {\n\t\tawait deleteUser.run();\n\t\t\n\t\tawait this.getAllUsers();\n\t\t\n\t\tcloseModal('mdl_deleteUser');\n\t\t\n\t\tshowAlert('User Deleted!', 'success');\n\t},\n}",
+    "variables": [],
+    "userPermissions": []
+  },
+  "id": "User Managment_utils",
+  "deleted": false,
+  "gitSyncId": "643669eb7c81ad7697466883_644f719792c5434b5a5a4438"
+}

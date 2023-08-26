@@ -1,0 +1,16 @@
+{
+  "unpublishedCollection": {
+    "name": "utils",
+    "pageId": "Login",
+    "pluginId": "js-plugin",
+    "pluginType": "JS",
+    "actions": [],
+    "archivedActions": [],
+    "body": "export default {\n\tinit: () => {\n\t\tconst notFirstTime = appsmith.store.isFirstTime;\n\n\t\tif (!notFirstTime) {\n\t\t\tshowModal('mdl_appInfo')\n\t\t} else {\n\t\t\tstoreValue('notFirstTime', true);\n\t\t}\n\t},\n\n\tgenerateDemoHash: async () => {\n\t\treturn dcodeIO.bcrypt.hashSync('123456', 10);\n\t},\n\n\tverifyHash: async (password, hash) => {\n\t\treturn dcodeIO.bcrypt.compareSync(password, hash)\n\t},\n\n\tcreateToken: async (user) => {\n\t\treturn jsonwebtoken.sign(user, 'secret', {expiresIn: 60*60});\n\t},\n\n\tsignIn: async () => {\n\t\tconst email = inp_email.text;\n\t\tconst password = inp_password.text;\n\n\t\tconst [user] = await findUserByEmail.run({email});\n\n\t\tif (user && this.verifyHash(password, user?.password_hash)) {\n\t\t\tstoreValue('token', await this.createToken(user))\n\t\t\t\t.then(() => updateLogin.run({\n\t\t\t\tid: user.id\n\t\t\t}))\n\t\t\t\t.then(() => navigateTo('View Applications'))\n\t\t} else {\n\t\t\treturn showAlert('Invalid emaill/password combination', 'error');\n\t\t}\n\t},\n}",
+    "variables": [],
+    "userPermissions": []
+  },
+  "id": "Login_utils",
+  "deleted": false,
+  "gitSyncId": "643669eb7c81ad7697466883_644720464e2ebf14d52c24ea"
+}
